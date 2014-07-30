@@ -143,7 +143,8 @@ var
       snapshot = {
         src: player.currentSrc(),
         currentTime: player.currentTime(),
-
+        // get the current tech name in case the video tech is different than ad tech
+        techName: player.techName,
         // on slow connections, player.paused() may be true when starting and
         // stopping ads even though play has been requested. Hard-coding the
         // playback state works for the purposes of ad playback but makes this
@@ -224,7 +225,13 @@ var
       return;
     }
 
+    // if the original video used a different tech, load that tech again
+    if (player.techName !== snapshot.techName){
+      player.loadTech(snapshot.techName,snapshot.src);
+    }else{
     player.src(snapshot.src);
+    }
+    
     // safari requires a call to `load` to pick up a changed source
     player.load();
 
